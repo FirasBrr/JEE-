@@ -47,7 +47,7 @@ public class insController extends HttpServlet {
 
             switch (user.getRole()) {
                 case "admin":
-                    response.sendRedirect("admin/dashboard.jsp");
+                    response.sendRedirect("admin/admin.jsp");
                     break;
                 case "agent":
                     response.sendRedirect("agent/dashboard.jsp");

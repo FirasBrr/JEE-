@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class UserDAO {
 
@@ -68,6 +69,43 @@ public class UserDAO {
         }
 
         return null;
+    }
+    public int getTotalUsers() throws SQLException {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM users";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
+    }
+
+
+    public int getUsersByRole(String role) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM users WHERE role = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, role);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        }
+    }
+
+    // Add this if you want to display users by role in dashboard
+    public int getAdminCount() throws SQLException {
+        return getUsersByRole("admin");
+    }
+
+    public int getAgentCount() throws SQLException {
+        return getUsersByRole("agent");
+    }
+
+    public int getVisiteurCount() throws SQLException {
+        return getUsersByRole("visiteur");
     }
 }
 
