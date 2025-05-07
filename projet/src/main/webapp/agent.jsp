@@ -1,11 +1,52 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="models.User" %>
+<%@ page import="java.sql.*" %>
 <%@ page import="utils.DBConnection" %>
+
 <%
+    // Get the current logged-in user (agent)
     User user = (User) session.getAttribute("currentUser");
     if (user == null || !"agent".equals(user.getRole())) {
         response.sendRedirect(request.getContextPath() + "/login.jsp");
         return;
+    }
+
+    int agentId = user.getId(); // Get the ID of the agent from the session
+
+    // Variables to store the data we will fetch from the database
+    int totalCars = 0;
+    double totalRevenue = 0.0;
+
+    // Fetch the number of cars (biens) and total revenue from the database
+    Connection connection = DBConnection.getConnection();
+    if (connection != null) {
+        try {
+            // Query to get the count of cars added by this agent
+            String countCarsQuery = "SELECT COUNT(*) FROM biens WHERE agent_id = ?";
+            PreparedStatement countCarsStmt = connection.prepareStatement(countCarsQuery);
+            countCarsStmt.setInt(1, agentId);
+            ResultSet countCarsResult = countCarsStmt.executeQuery();
+            if (countCarsResult.next()) {
+                totalCars = countCarsResult.getInt(1);
+            }
+
+            // Query to get the total revenue generated from the agent's cars
+            String totalRevenueQuery = "SELECT SUM(prix_par_jour) FROM biens WHERE agent_id = ?";
+            PreparedStatement totalRevenueStmt = connection.prepareStatement(totalRevenueQuery);
+            totalRevenueStmt.setInt(1, agentId);
+            ResultSet totalRevenueResult = totalRevenueStmt.executeQuery();
+            if (totalRevenueResult.next()) {
+                totalRevenue = totalRevenueResult.getDouble(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 %>
 
@@ -14,11 +55,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Agent Dashboard</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/admindash.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/agentdash.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 <body>
     <div class="agent-container">
+        <!-- Sidebar Navigation -->
         <div class="sidebar">
             <div class="agent-profile">
                 <h3><%= user.getUsername() %></h3>
@@ -26,42 +70,100 @@
             </div>
             <nav class="agent-nav">
                 <ul>
-                    <li><a href="agent_dashboard.jsp"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="add_bien.jsp"><i class="fas fa-car"></i> Add Car</a></li>
+                    <li class="active"><a href="agent.jsp"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="addCar.jsp"><i class="fas fa-car"></i> Add Car</a></li>
+                     <li><a href="listCars.jsp"><i class="fas fa-car"></i> Car Inventory</a></li>       
                     <li><a href="reservations.jsp"><i class="fas fa-calendar-check"></i> Reservations</a></li>
                     <li><a href="${pageContext.request.contextPath}/login.jsp"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </nav>
         </div>
         
+        <!-- Main Content -->
         <div class="main-content">
             <header class="agent-header">
                 <h1>Welcome to your Agent Dashboard</h1>
             </header>
 
-            <div class="add-bien-section">
-                <h2>Add a New Car</h2>
-                <form action="add_bien.jsp" method="post">
-                    <label for="type">Car Type:</label>
-                    <input type="text" id="type" name="type" required>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #4e73df;">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Cars</h3>
+                        <p><%= totalCars %></p>
+                    </div>
+                </div>
 
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" required></textarea>
-
-                    <label for="prix">Price Per Day:</label>
-                    <input type="number" id="prix" name="prix_par_jour" required>
-
-                    <label for="disponibilite">Availability:</label>
-                    <select id="disponibilite" name="disponibilite" required>
-                        <option value="1">Available</option>
-                        <option value="0">Not Available</option>
-                    </select>
-
-                    <button type="submit" name="addBien">Add Car</button>
-                </form>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #36b9cc;">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Revenue</h3>
+                        <p><%= totalRevenue %> €</p> <!-- Assuming the currency is in Euros -->
+                    </div>
+                </div>
             </div>
+            <div class="chart-section">
+    <h2>Total Cars and Total Revenue</h2>
+    <canvas id="agentChart" width="400" height="140"></canvas>
+</div>
+            
         </div>
     </div>
+<script>
+    // Prepare data from your server (you'll need to pass this from your backend)
+    const totalCars = <%= totalCars %>;  // Replace with your server-side variable for total cars
+    const totalRevenue = <%= totalRevenue %>;  // Replace with your server-side variable for total revenue
+
+    // Chart.js configuration
+    var ctx = document.getElementById('agentChart').getContext('2d');
+    var agentChart = new Chart(ctx, {
+        type: 'bar',  // Bar chart for displaying total cars and total revenue
+        data: {
+            labels: ['Total Cars', 'Total Revenue'],  // Labels for your data
+            datasets: [{
+                label: 'Agent Stats',
+                data: [totalCars, totalRevenue],  // Data points for total cars and revenue
+                backgroundColor: [
+                    '#4e73df', // Color for Total Cars
+                    '#1cc88a'  // Color for Total Revenue
+                ],
+                borderColor: [
+                    '#4e73df',
+                    '#1cc88a'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            // Format the tooltip labels
+                            if (tooltipItem.datasetIndex === 1) {
+                                return `$${tooltipItem.raw.toFixed(2)}`; // Format revenue with dollar sign
+                            }
+                            return tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 
     <script src="${pageContext.request.contextPath}/resources/script/admindash.js"></script>
 </body>

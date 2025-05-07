@@ -32,5 +32,27 @@
     <servlet-name>insController</servlet-name>
     <url-pattern>/insController</url-pattern>
   </servlet-mapping>
+    <!-- AddCarServlet -->
+    <servlet>
+        <servlet-name>AddCarServlet</servlet-name>
+        <servlet-class>controlleur.AddCarServlet</servlet-class>
+    </servlet>
+    
+    <!-- Map the Servlet to a URL pattern -->
+    <servlet-mapping>
+        <servlet-name>AddCarServlet</servlet-name>
+        <url-pattern>/addCarServlet</url-pattern>
+    </servlet-mapping>
+
+
+<servlet>
+    <servlet-name>ShowCarsServlet</servlet-name>
+    <servlet-class>controlleur.ShowCarsServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>ShowCarsServlet</servlet-name>
+    <url-pattern>/showCars</url-pattern>
+</servlet-mapping>
 
 </web-app>
