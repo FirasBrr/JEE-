@@ -9,8 +9,8 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 
-@WebServlet("/authe")
-public class insController extends HttpServlet {
+@WebServlet("/login")
+public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private UserDAO userDAO;
 
@@ -21,27 +21,6 @@ public class insController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String action = request.getParameter("action");
-
-        if ("register".equals(action)) {
-            handleRegister(request, response);
-        }
-        else if ("login".equals(action)) {
-            handleLogin(request, response);
-        }
-    }
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-
-            throws ServletException, IOException {
-
-        response.sendRedirect("/login.jsp");
-
-    }
-
-    private void handleLogin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String username = request.getParameter("username");
@@ -59,7 +38,7 @@ public class insController extends HttpServlet {
                     response.sendRedirect("admin/admin.jsp");
                     break;
                 case "agent":
-                    response.sendRedirect("agent/dashboard.jsp");
+                    response.sendRedirect("agent.jsp");
                     break;
                 case "visiteur":
                     response.sendRedirect("home.jsp");
@@ -74,23 +53,9 @@ public class insController extends HttpServlet {
         }
     }
 
-
-	private void handleRegister(HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String role = request.getParameter("role");
-
-        User user = new User(username, password, role);
-        boolean registered = userDAO.register(user);
-
-        if (registered) {
-            request.setAttribute("message", "Registration successful. Please login.");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-        } else {
-            request.setAttribute("error", "Registration failed. Try again.");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
-        }
+        response.sendRedirect("login.jsp");
     }
 }

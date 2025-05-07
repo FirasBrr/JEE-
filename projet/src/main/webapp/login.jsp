@@ -9,7 +9,7 @@
 <div class="form-container">
     <h2>Login</h2>
 
-  <form method="post" action="authe">
+<form method="post" action="${pageContext.request.contextPath}/login">
     <input type="hidden" name="action" value="login">
     
     <input type="text" name="username" placeholder="Username" required /><br>

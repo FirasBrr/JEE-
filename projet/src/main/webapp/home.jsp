@@ -19,7 +19,22 @@
                 <li><a href="#services">Services</a></li>
                 <li><a href="#about">À Propos</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="login.jsp" class="btn-login">Connexion</a></li>
+               <% String username = (String) session.getAttribute("username");
+    if (username != null) { %>
+
+
+
+     <li><span class="btn-user">Bienvenue, <%= username %></span></li>
+<li><a href="${pageContext.request.contextPath}/logout" class="btn-logout">Déconnexion</a></li>
+<%
+    } else {
+%>
+<li><a href="${pageContext.request.contextPath}/login.jsp" class="btn-login">Connexion</a></li>
+
+<%
+    }
+%>
+
             </ul>
             <div class="hamburger">
                 <i class="fas fa-bars"></i>
@@ -71,7 +86,7 @@
                         <span><i class="fas fa-cogs"></i> Manuel</span>
                     </div>
                     <p class="price">À partir de 35€/jour</p>
-                    <a href="#" class="btn-secondary">Réserver</a>
+    <a href="reserver.jsp?vehicle=economique" class="btn-secondary">Réserver</a>
                 </div>
                 
                 <div class="vehicle-card">
@@ -154,7 +169,26 @@
             </div>
         </div>
     </footer>
-
-    <script src="resources/script/home.js"></script>
+<script>
+document.querySelectorAll('.reserve-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const vehicleType = this.getAttribute('data-vehicle');
+        
+        // Load the reservation form via AJAX
+        fetch(`reserver.jsp?vehicle=${vehicleType}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('reservationContainer').innerHTML = html;
+                // Scroll to the form
+                document.getElementById('reservationContainer').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+    });
+});
+</script>
+<script src="resources/script/home.js"></script>
+    
 </body>
 </html>
