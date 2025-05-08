@@ -319,11 +319,8 @@
         <div class="container">
             <a href="#" class="logo">Auto<span>Loc</span></a>
             <ul class="nav-links">
-                <li><a href="home.jsp" class="active">Accueil</a></li>
-                <li><a href="#vehicles">Nos Véhicules</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">À Propos</a></li>
-                <li><a href="#contact">Contact</a></li>
+               <li><a href="home.jsp" class="active">Home</a></li>
+    <li><a href="#vehicles">Our Cars</a></li>
                <% String username = (String) session.getAttribute("username");
     if (username != null) { %>
 
@@ -357,15 +354,14 @@
         </div>
     </nav>
     <div class="reservations-container">
-        <h1 class="page-title">Mes Réservations</h1>
-        
+<h1 class="page-title">My Reservations</h1>        
         <% if (userReservations.isEmpty()) { %>
             <div class="no-reservations">
-                <i class="fas fa-calendar-times"></i>
-                <h3>Aucune réservation trouvée</h3>
-                <p>Vous n'avez effectué aucune réservation pour le moment.</p>
-                <a href="home.jsp" class="btn-primary">Réserver maintenant</a>
-            </div>
+    <i class="fas fa-calendar-times"></i>
+    <h3>No reservations found</h3>
+    <p>You haven't made any reservations yet.</p>
+    <a href="home.jsp" class="btn-primary">Book now</a>
+</div>
         <% } else { %>
             <% for (int i = 0; i < userReservations.size(); i++) { 
                 Reservation reservation = userReservations.get(i);
@@ -391,8 +387,24 @@
                         <div class="reservation-header">
                             <h3 class="car-name"><%= carNames.get(i) %></h3>
                             <span class="reservation-status <%= statusClass %>">
-                                <%= reservation.getStatut() %>
-                            </span>
+    <% 
+        String statusText = "";
+        switch(reservation.getStatut()) {
+            case "en_attente":
+                statusText = "Pending";
+                break;
+            case "confirmée":
+                statusText = "Confirmed";
+                break;
+            case "annulée":
+                statusText = "Cancelled";
+                break;
+            default:
+                statusText = reservation.getStatut();
+        }
+    %>
+    <%= statusText %>
+</span>
                         </div>
                         
                         <div class="detail-grid">
@@ -420,9 +432,7 @@
                             <div style="margin-top: auto; text-align: right;">
                                 <form action="CancelReservationServlet" method="post" style="display: inline;">
                                     <input type="hidden" name="reservationId" value="<%= reservation.getId() %>">
-                                    <button type="submit" class="btn-danger">
-                                        <i class="fas fa-times"></i> Annuler
-                                    </button>
+                                   
                                 </form>
                             </div>
                         <% } %>

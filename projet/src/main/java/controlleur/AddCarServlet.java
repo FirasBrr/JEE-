@@ -74,7 +74,7 @@ public class AddCarServlet extends HttpServlet {
             
             // Determine the directory to save images
             String appPath = getServletContext().getRealPath("");
-            String imageDir = appPath + File.separator + "images"; // "images" folder in the root of the project
+            String imageDir = appPath + File.separator + "resources/img"; // "images" folder in the root of the project
 
             // Ensure the directory exists, if not create it
             File dir = new File(imageDir);

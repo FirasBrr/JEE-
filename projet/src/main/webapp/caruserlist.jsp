@@ -44,6 +44,7 @@
 <html lang="fr">
 <head>
 <style>
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -135,6 +136,92 @@ body {
     margin-right: 5px;
     color: #555;
 }
+/* User Dropdown - Matches Nav Style */
+.nav-dropdown {
+    position: relative;
+    margin-left: 20px;
+}
+
+.nav-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: var(--dark-color);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-dropdown-trigger:hover {
+    color: var(--primary-color);
+}
+
+.nav-dropdown-trigger .fa-angle-down {
+    font-size: 0.9em;
+    transition: transform 0.2s;
+}
+
+.nav-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    width: 200px;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+    list-style: none;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.nav-dropdown:hover .fa-angle-down {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: var(--dark-color);
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: all 0.2s;
+}
+
+.nav-dropdown-menu li a:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.nav-dropdown-menu li a i {
+    width: 18px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #eee;
+    margin: 8px 0;
+}
+
+.logout-link {
+    color: var(--danger-color) !important;
+}
+
+.logout-link:hover {
+    color: #c0392b !important;
+}
 
 </style>
 
@@ -148,22 +235,29 @@ body {
         <div class="container">
             <a href="#" class="logo">Auto<span>Loc</span></a>
             <ul class="nav-links">
-                <li><a href="home.jsp" class="active">Accueil</a></li>
-                <li><a href="#vehicles">Nos Véhicules</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">À Propos</a></li>
-                <li><a href="#contact">Contact</a></li>
-               <% String username = (String) session.getAttribute("username");
+    <li><a href="home.jsp" >Home</a></li>
+    <li><a href="#vehicles" class="active">Our Cars</a></li>
+                 <% String username = (String) session.getAttribute("username");
     if (username != null) { %>
 
 
 
-     <li><span class="btn-user">Bienvenue, <%= username %></span></li>
-<li><a href="${pageContext.request.contextPath}/logout" class="btn-logout">Déconnexion</a></li>
+     <li class="nav-dropdown">
+    <div class="nav-dropdown-trigger">
+        <span class="btn-user">Welcome, <%= username %></span>
+        <i class="fas fa-angle-down"></i>
+    </div>
+    <ul class="nav-dropdown-menu">
+        <li><a href="profile.jsp"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="userreservation.jsp"><i class="fas fa-calendar-alt"></i> Reservations</a></li>
+        <li class="dropdown-divider"></li>
+        <li><a href="${pageContext.request.contextPath}/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+</li>
 <%
     } else {
 %>
-<li><a href="${pageContext.request.contextPath}/login.jsp" class="btn-login">Connexion</a></li>
+<li><a href="${pageContext.request.contextPath}/login.jsp" class="btn-login">Login</a></li>
 
 <%
     }
@@ -190,14 +284,14 @@ body {
                     <h3><%= car.getCarName() %></h3>
                     <p><%= car.getCarDescription() %></p>
                     <p>Type: <%= car.getCarType() %></p>                    
-                    <p class="price">Prix par jour: <%= car.getPricePerDay() %> €</p>
-                    <a href="reserver.jsp?carId=<%= car.getId() %>" class="btn-secondary">Réserver</a>
+                    <p class="price">Price per day: <%= car.getPricePerDay() %> €</p>
+                    <a href="reserver.jsp?carId=<%= car.getId() %>" class="btn-secondary">Book Now</a>
                 </div>
             </div>
         <% } %>
 
         <% if (cars.isEmpty()) { %>
-            <p style="text-align:center;">Aucun véhicule disponible pour le moment.</p>
+            <p style="text-align:center;">No Car available right now.</p>
         <% } %>
     </div>
     

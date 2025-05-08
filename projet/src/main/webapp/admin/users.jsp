@@ -27,44 +27,61 @@
         .main-content {
             padding: 20px;
         }
+        .users-table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
         .users-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .users-table th, .users-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
         .users-table th {
             background-color: #4e73df;
             color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
         }
-        .users-table tr:nth-child(even) {
+        .users-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        .users-table tr:last-child td {
+            border-bottom: none;
+        }
+        .users-table tr:hover {
             background-color: #f8f9fa;
         }
-        .form-group {
-            margin-bottom: 15px;
+        .users-table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .users-table tr:nth-child(even):hover {
+            background-color: #f1f1f1;
         }
         .btn {
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 4px;
             border: none;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.2s;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 13px;
         }
         .btn-primary {
             background: #4e73df;
@@ -102,16 +119,33 @@
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-        .action-form input[type="text"], .action-form select {
-            width: 150px;
-            margin-right: 5px;
-        }
-        .action-form input[type="password"] {
-            width: 150px;
-            margin-right: 5px;
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .action-form {
+            margin: 0;
+        }
+        .role-badge {
             display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .role-admin {
+            background-color: #f0e6ff;
+            color: #6f42c1;
+        }
+        .role-agent {
+            background-color: #e6f7ff;
+            color: #17a2b8;
+        }
+        .role-visiteur {
+            background-color: #fff2e6;
+            color: #fd7e14;
         }
         /* Modal Styles */
         .modal {
@@ -128,7 +162,7 @@
         .modal-content {
             background: white;
             margin: 10% auto;
-            padding: 20px;
+            padding: 25px;
             border-radius: 8px;
             box-shadow: 0 2px 15px rgba(0,0,0,0.3);
             width: 90%;
@@ -139,15 +173,20 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
         .modal-header h2 {
             margin: 0;
             font-size: 1.5em;
+            color: #333;
         }
         .modal-close {
             font-size: 1.5em;
             color: #6c757d;
             cursor: pointer;
+            background: none;
+            border: none;
         }
         .modal-close:hover {
             color: #e74a3b;
@@ -157,15 +196,35 @@
             justify-content: flex-end;
             gap: 10px;
             margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
         @media (max-width: 768px) {
-            .users-table {
-                display: block;
-                overflow-x: auto;
+            .users-table td, .users-table th {
+                padding: 10px;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
             }
             .modal-content {
                 margin: 20% auto;
                 width: 95%;
+                padding: 15px;
             }
         }
     </style>
@@ -205,7 +264,7 @@
                 if (message != null) {
             %>
                 <div class="alert alert-success">
-                    <%= message %>
+                    <i class="fas fa-check-circle"></i> <%= message %>
                 </div>
                 <% session.removeAttribute("message"); %>
             <%
@@ -213,7 +272,7 @@
                 if (error != null) {
             %>
                 <div class="alert alert-error">
-                    <%= error %>
+                    <i class="fas fa-exclamation-circle"></i> <%= error %>
                 </div>
                 <% session.removeAttribute("error"); %>
             <%
@@ -222,7 +281,9 @@
 
             <!-- Add User Button -->
             <div class="form-section">
-                <button class="btn btn-primary" onclick="openModal()">Add New User</button>
+                <button class="btn btn-primary" onclick="openAddModal()">
+                    <i class="fas fa-plus"></i> Add New User
+                </button>
             </div>
 
             <!-- Add User Modal -->
@@ -230,7 +291,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2>Add New User</h2>
-                        <span class="modal-close" onclick="closeModal()">&times;</span>
+                        <button class="modal-close" onclick="closeAddModal()">&times;</button>
                     </div>
                     <form action="${pageContext.request.contextPath}/userManagement" method="post">
                         <input type="hidden" name="action" value="add">
@@ -251,89 +312,136 @@
                             </select>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
                             <button type="submit" class="btn btn-primary">Add User</button>
                         </div>
                     </form>
                 </div>
             </div>
 
+            <!-- Edit User Modal -->
+            <div id="editUserModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Edit User</h2>
+                        <button class="modal-close" onclick="closeEditModal()">&times;</button>
+                    </div>
+                    <form action="${pageContext.request.contextPath}/userManagement" method="post">
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" id="editUserId" name="userId">
+                        <div class="form-group">
+                            <label for="editUsername">Username</label>
+                            <input type="text" id="editUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPassword">Password (leave blank to keep current)</label>
+                            <input type="password" id="editPassword" name="password" placeholder="New Password">
+                        </div>
+                        <div class="form-group">
+                            <label for="editRole">Role</label>
+                            <select id="editRole" name="role" required>
+                                <option value="admin">Admin</option>
+                                <option value="agent">Agent</option>
+                                <option value="visiteur">Visiteur</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Users Table -->
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <%
-                        if (users == null || users.isEmpty()) {
-                    %>
+            <div class="users-table-container">
+                <table class="users-table">
+                    <thead>
                         <tr>
-                            <td colspan="4">Aucun utilisateur trouvé.</td>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Actions</th>
                         </tr>
-                    <%
-                        } else {
-                            for (User user : users) {
-                    %>
-                    <tr>
-                        <td><%= user.getId() %></td>
-                        <td><%= user.getUsername() %></td>
-                        <td><%= user.getRole() %></td>
-                        <td>
-                            <!-- Edit Form -->
-                            <form action="${pageContext.request.contextPath}/userManagement" method="post" class="action-form">
-                                <input type="hidden" name="action" value="edit">
-                                <input type="hidden" name="userId" value="<%= user.getId() %>">
-                                <input type="text" name="username" value="<%= user.getUsername() %>" required>
-                                <input type="password" name="password" placeholder="New Password">
-                                <select name="role" required>
-                                    <option value="admin" <%= "admin".equals(user.getRole()) ? "selected" : "" %>>Admin</option>
-                                    <option value="agent" <%= "agent".equals(user.getRole()) ? "selected" : "" %>>Agent</option>
-                                    <option value="visiteur" <%= "visiteur".equals(user.getRole()) ? "selected" : "" %>>Visiteur</option>
-                                </select>
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-edit"></i> Update</button>
-                            </form>
-                            <!-- Delete Form -->
-                            <form action="${pageContext.request.contextPath}/userManagement" method="post" class="action-form">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="userId" value="<%= user.getId() %>">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');"><i class="fas fa-trash"></i> Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <%
+                    </thead>
+                    <tbody>
+                        <%
+                            if (users == null || users.isEmpty()) {
+                        %>
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No users found</td>
+                            </tr>
+                        <%
+                            } else {
+                                for (User user : users) {
+                        %>
+                        <tr>
+                            <td><%= user.getId() %></td>
+                            <td><%= user.getUsername() %></td>
+                            <td>
+                                <span class="role-badge role-<%= user.getRole() %>">
+                                    <i class="fas fa-<%= 
+                                        "admin".equals(user.getRole()) ? "user-shield" : 
+                                        "agent".equals(user.getRole()) ? "user-tie" : "user" 
+                                    %>"></i> <%= user.getRole() %>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary btn-sm" onclick="openEditModal(<%= user.getId() %>, '<%= user.getUsername() %>', '<%= user.getRole() %>')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <form action="${pageContext.request.contextPath}/userManagement" method="post" class="action-form">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="userId" value="<%= user.getId() %>">
+                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this user?');">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <%
+                                }
                             }
-                        }
-                    %>
-                </tbody>
-            </table>
+                        %>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // Get modal element
-        const modal = document.getElementById("addUserModal");
-
-        // Open modal
-        function openModal() {
-            modal.style.display = "block";
+        // Add User Modal Functions
+        function openAddModal() {
+            document.getElementById('addUserModal').style.display = "block";
         }
 
-        // Close modal
-        function closeModal() {
-            modal.style.display = "none";
-            // Reset form fields
+        function closeAddModal() {
+            document.getElementById('addUserModal').style.display = "none";
             document.querySelector("#addUserModal form").reset();
         }
 
-        // Close modal if clicking outside
+        // Edit User Modal Functions
+        function openEditModal(userId, username, role) {
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editUsername').value = username;
+            document.getElementById('editRole').value = role;
+            document.getElementById('editUserModal').style.display = "block";
+        }
+
+        function closeEditModal() {
+            document.getElementById('editUserModal').style.display = "none";
+            document.querySelector("#editUserModal form").reset();
+        }
+
+        // Close modals when clicking outside
         window.onclick = function(event) {
-            if (event.target === modal) {
-                closeModal();
+            if (event.target == document.getElementById('addUserModal')) {
+                closeAddModal();
+            }
+            if (event.target == document.getElementById('editUserModal')) {
+                closeEditModal();
             }
         }
     </script>

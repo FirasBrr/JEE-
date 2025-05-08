@@ -1,10 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoLoc - Location de Voitures</title>
+<title>AutoLoc - Car Rental</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>/* Minimal User Dropdown */
@@ -120,19 +120,17 @@
         <div class="container">
             <a href="#" class="logo">Auto<span>Loc</span></a>
             <ul class="nav-links">
-                <li><a href="#home" class="active">Accueil</a></li>
-                <li><a href="#vehicles">Nos Véhicules</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">À Propos</a></li>
-                <li><a href="#contact">Contact</a></li>
-               <% String username = (String) session.getAttribute("username");
+    <li><a href="home.jsp" class="active">Home</a></li>
+    <li><a href="#vehicles">Our Cars</a></li>
+    <li><a href="#services">Services</a></li>
+                 <% String username = (String) session.getAttribute("username");
     if (username != null) { %>
 
 
 
      <li class="nav-dropdown">
     <div class="nav-dropdown-trigger">
-        <span class="btn-user">Bienvenue, <%= username %></span>
+        <span class="btn-user">Welcome, <%= username %></span>
         <i class="fas fa-angle-down"></i>
     </div>
     <ul class="nav-dropdown-menu">
@@ -145,7 +143,7 @@
 <%
     } else {
 %>
-<li><a href="${pageContext.request.contextPath}/login.jsp" class="btn-login">Connexion</a></li>
+<li><a href="${pageContext.request.contextPath}/login.jsp" class="btn-login">Login</a></li>
 
 <%
     }
@@ -168,9 +166,9 @@
     
     <div class="container">
         <div class="hero-content">
-            <h1 class="animate-text">Louez la voiture de vos rêves</h1>
-            <p class="animate-text" data-delay="0.2s">Découvrez notre large sélection de véhicules à des prix compétitifs</p>
-            <a href="#vehicles" class="btn-primary animate-pop" data-delay="0.4s">Voir nos véhicules</a>
+            <h1 class="animate-text">Rent your dream car</h1>
+            <p class="animate-text" data-delay="0.2s">Discover our wide selection of vehicles at competitive prices</p>
+            <a href="#vehicles" class="btn-primary animate-pop" data-delay="0.4s">View our vehicles</a>
         </div>
         
         <!-- Featured Cars Floating Animation -->
@@ -191,42 +189,42 @@
     <!-- Vehicle Showcase -->
     <section class="vehicles" id="vehicles">
         <div class="container">
-            <h2 class="section-title">Nos Véhicules</h2>
+            <h2 class="section-title">Our Cars</h2>
             <div class="vehicle-grid">
                 <div class="vehicle-card">
                     <img src="resources/img/Suzuki-Celerio.jpg" alt="Voiture Économique">
-                    <h3>Voiture Économique</h3>
+                    <h3>Economy Car</h3>
                     <div class="vehicle-info">
-                        <span><i class="fas fa-gas-pump"></i> Essence</span>
-                        <span><i class="fas fa-users"></i> 5 places</span>
-                        <span><i class="fas fa-cogs"></i> Manuel</span>
+                        <span><i class="fas fa-gas-pump"></i> Gasoline</span>
+                        <span><i class="fas fa-users"></i> 5 seats</span>
+                        <span><i class="fas fa-cogs"></i> Manual</span>
                     </div>
-                    <p class="price">À partir de 35€/jour</p>
-    <a href="caruserlist.jsp?vehicle=economique" class="btn-secondary">Réserver</a>
+                    <p class="price">From 35€/day</p>
+    <a href="caruserlist.jsp?vehicle=economique" class="btn-secondary">Book Now</a>
                 </div>
                 
                 <div class="vehicle-card">
                     <img src="resources/img/Skoda Kodiaq.jpg" alt="SUV Familial">
-                    <h3>SUV Familial</h3>
+                    <h3>Family SUV</h3>
                     <div class="vehicle-info">
                         <span><i class="fas fa-gas-pump"></i> Diesel</span>
-                        <span><i class="fas fa-users"></i> 7 places</span>
-                        <span><i class="fas fa-cogs"></i> Automatique</span>
+                        <span><i class="fas fa-users"></i> 7 seats</span>
+                        <span><i class="fas fa-cogs"></i> Automatic</span>
                     </div>
-                    <p class="price">À partir de 65€/jour</p>
-                    <a href="reserver.jsp?vehicle=economique" class="btn-secondary">Réserver</a>
+                    <p class="price">From 65€/day</p>
+                    <a href="caruserlist.jsp?vehicle=economique" class="btn-secondary">Book Now</a>
                 </div>
                 
                 <div class="vehicle-card">
                     <img src="resources/img/Ferrari F8 Spider.jpg" alt="Voiture de Luxe">
-                    <h3>Voiture de Luxe</h3>
+                    <h3>Luxury Car</h3>
                     <div class="vehicle-info">
-                        <span><i class="fas fa-gas-pump"></i> Essence</span>
-                        <span><i class="fas fa-users"></i> 2 places</span>
-                        <span><i class="fas fa-cogs"></i> Automatique</span>
+                        <span><i class="fas fa-gas-pump"></i> Gasoline</span>
+                        <span><i class="fas fa-users"></i> 2 seats</span>
+                        <span><i class="fas fa-cogs"></i> Automatic</span>
                     </div>
-                    <p class="price">À partir de 120€/jour</p>
-                    <a href="#" class="btn-secondary">Réserver</a>
+                    <p class="price">From 120€/day</p>
+                    <a href="caruserlist.jsp" class="btn-secondary">Book Now</a>
                 </div>
             </div>
         </div>
@@ -235,24 +233,24 @@
     <!-- Services Section -->
     <section class="services" id="services">
         <div class="container">
-            <h2 class="section-title">Nos Services</h2>
-            <div class="service-grid">
-                <div class="service-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>Assurance Complète</h3>
-                    <p>Protection maximale pour votre tranquillité d'esprit</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-road"></i>
-                    <h3>Kilométrage Illimité</h3>
-                    <p>Conduisez sans vous soucier des kilomètres parcourus</p>
-                </div>
-                <div class="service-card">
-                    <i class="fas fa-clock"></i>
-                    <h3>Service 24/7</h3>
-                    <p>Assistance disponible à tout moment</p>
-                </div>
-            </div>
+            <h2 class="section-title">Our Services</h2>
+<div class="service-grid">
+    <div class="service-card">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Full Insurance</h3>
+        <p>Maximum protection for your peace of mind</p>
+    </div>
+    <div class="service-card">
+        <i class="fas fa-road"></i>
+        <h3>Unlimited Mileage</h3>
+        <p>Drive without worrying about distance</p>
+    </div>
+    <div class="service-card">
+        <i class="fas fa-clock"></i>
+        <h3>24/7 Service</h3>
+        <p>Assistance available anytime</p>
+    </div>
+</div>
         </div>
     </section>
 
@@ -261,30 +259,29 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>AutoLoc</h3>
-                    <p>Votre partenaire de confiance pour la location de véhicules depuis 2010.</p>
-                </div>
-                <div class="footer-section">
-                    <h3>Liens Rapides</h3>
-                    <ul>
-                        <li><a href="#home">Accueil</a></li>
-                        <li><a href="#vehicles">Véhicules</a></li>
-                        <li><a href="#services">Services</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Contactez-nous</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> 123 Rue de la Location, Paris</p>
-                    <p><i class="fas fa-phone"></i> +33 1 23 45 67 89</p>
-                    <p><i class="fas fa-envelope"></i> contact@autoloc.fr</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2023 AutoLoc. Tous droits réservés.</p>
-            </div>
+    <h3>AutoLoc</h3>
+    <p>Your trusted partner for car rental since 2010.</p>
+</div>
+<div class="footer-section">
+    <h3>Quick Links</h3>
+    <ul>
+        <li><a href="home.jsp">Home</a></li>
+        <li><a href="#vehicles">Vehicles</a></li>
+        <li><a href="#services">Services</a></li>
+
+    </ul>
+</div>
+<div class="footer-section">
+    <h3>Contact Us</h3>
+    <p><i class="fas fa-map-marker-alt"></i> 123 Rental Street, Tunisia</p>
+    <p><i class="fas fa-phone"></i> +216 55 555 555</p>
+    <p><i class="fas fa-envelope"></i> contact@autoloc.tn</p>
+</div>
+<div class="footer-bottom">
+    <p>&copy; 2025 AutoLoc. All rights reserved.</p>
+</div>
         </div>
-    </footer>
+</div>    </footer>
 <script>
 document.querySelectorAll('.reserve-btn').forEach(btn => {
     btn.addEventListener('click', function(e) {

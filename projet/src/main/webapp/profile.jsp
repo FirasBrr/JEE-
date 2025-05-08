@@ -224,11 +224,8 @@
         <div class="container">
             <a href="#" class="logo">Auto<span>Loc</span></a>
             <ul class="nav-links">
-                <li><a href="home.jsp">Accueil</a></li>
-                <li><a href="#vehicles">Nos Véhicules</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#about">À Propos</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="home.jsp" >Home</a></li>
+    <li><a href="#vehicles">Our Cars</a></li>
                 <% String username = (String) session.getAttribute("username");
                 if (username != null) { %>
                 <li class="nav-dropdown">
@@ -256,8 +253,8 @@
     <!-- Main Content -->
     <main class="profile-container">
         <div class="profile-header">
-            <h1>Mon Profil</h1>
-            <p class="welcome-message">Bienvenue dans votre espace personnel, <%= username %>.</p>
+            <h1>Profile</h1>
+            <p class="welcome-message">Welcome to you profile, <%= username %>.</p>
         </div>
 
         <div class="user-card">
@@ -272,34 +269,34 @@
 <form action="${pageContext.request.contextPath}/updateProfile" method="post" class="profile-form">
     <input type="hidden" name="action" value="updatePassword"> <!-- Add this -->
     <div class="profile-section">
-        <h2><i class="fas fa-user"></i> Informations du compte</h2>
+        <h2><i class="fas fa-user"></i> Account information</h2>
         <div class="form-group">
-            <label for="username">Nom d'utilisateur</label>
+            <label for="username">Username</label>
             <input type="text" id="username" name="username" value="<%= user.getUsername() %>" >
         </div>
     </div>
     <div class="profile-section">
-        <h2><i class="fas fa-lock"></i> Sécurité du compte</h2>
+        <h2><i class="fas fa-lock"></i> Account Security</h2>
         <div class="form-group">
-            <label for="currentPassword">Mot de passe actuel</label>
+            <label for="currentPassword">Actual password</label>
             <input type="password" id="currentPassword" name="currentPassword" required>
         </div>
         <div class="form-group">
-            <label for="newPassword">Nouveau mot de passe</label>
+            <label for="newPassword">New password</label>
             <input type="password" id="newPassword" name="newPassword" required>
         </div>
         <div class="form-group">
-            <label for="confirmPassword">Confirmer le nouveau mot de passe</label>
+            <label for="confirmPassword">Confirm new password</label>
             <input type="password" id="confirmPassword" name="confirmPassword" required>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Mettre à jour le mot de passe</button>
+            <button type="submit" class="btn btn-primary">Update your password</button>
         </div>
     </div>
 </form>
             <% } else { %>
                 <div class="alert alert-warning">
-                    <p>Impossible de charger les informations du profil. Veuillez réessayer plus tard.</p>
+                    <p>.</p>
                 </div>
             <% } %>
         </div>
@@ -311,24 +308,24 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>AutoLoc</h3>
-                    <p>Location de voitures pour tous vos besoins de voyage.</p>
+    <p>Your trusted partner for car rental since 2010.</p>
                 </div>
                 <div class="footer-section">
                     <h3>Liens rapides</h3>
                     <ul>
-                        <li><a href="#home">Accueil</a></li>
+                        <li><a href="home.jsp">Accueil</a></li>
                         <li><a href="#vehicles">Véhicules</a></li>
                         <li><a href="#services">Services</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>Email: contact@autoloc.com</p>
-                    <p>Téléphone: +33 1 23 45 67 89</p>
+                    <h3>Contact Us</h3>
+                    <p>123 Rental Street, Tunisia</p>
+                    <p>contact@autoloc.tn</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 AutoLoc. Tous droits réservés.</p>
+                <p>&copy; 2025 AutoLoc. All rights reserved.</p>
             </div>
         </div>
     </footer>

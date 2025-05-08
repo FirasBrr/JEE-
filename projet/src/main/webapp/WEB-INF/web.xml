@@ -54,5 +54,12 @@
     <servlet-name>ShowCarsServlet</servlet-name>
     <url-pattern>/showCars</url-pattern>
 </servlet-mapping>
-
+<servlet>
+    <servlet-name>DeleteCarServlet</servlet-name>
+    <servlet-class>controlleur.DeleteCarServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>DeleteCarServlet</servlet-name>
+    <url-pattern>/deleteCar</url-pattern>
+</servlet-mapping>
 </web-app>

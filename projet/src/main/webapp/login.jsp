@@ -24,9 +24,7 @@
         <p class="error"><%= request.getAttribute("error") %></p>
     <% } %>
 
-    <p class="link">Don't have an account?
-        <a href="${pageContext.request.contextPath}/register.jsp">Register here</a>
-    </p>
+   
 </div>
 
 </body>
