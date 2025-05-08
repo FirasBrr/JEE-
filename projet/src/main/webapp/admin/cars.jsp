@@ -299,7 +299,7 @@
                                 </div>
                             </div>
                             
-                            <div class="car-price">$<%= String.format("%.2f", car.getPricePerDay()) %>/day</div>
+                            <div class="car-price">€<%= String.format("%.2f", car.getPricePerDay()) %>/day</div>
                             
                             
                         </div>

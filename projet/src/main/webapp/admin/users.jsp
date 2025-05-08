@@ -308,7 +308,7 @@
                             <select id="role" name="role" required>
                                 <option value="admin">Admin</option>
                                 <option value="agent">Agent</option>
-                                <option value="visiteur">Visiteur</option>
+                                <option value="visiteur">Visitor</option>
                             </select>
                         </div>
                         <div class="modal-footer">
@@ -358,7 +358,6 @@
                 <table class="users-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Username</th>
                             <th>Role</th>
                             <th>Actions</th>
@@ -376,7 +375,6 @@
                                 for (User user : users) {
                         %>
                         <tr>
-                            <td><%= user.getId() %></td>
                             <td><%= user.getUsername() %></td>
                             <td>
                                 <span class="role-badge role-<%= user.getRole() %>">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réservation confirmée | AutoLoc</title>
+    <title>Reservation Confirmed | AutoLoc</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -122,13 +122,13 @@
         <div class="success-icon">
             <i class="fas fa-check-circle"></i>
         </div>
-        <h2>Votre réservation a été enregistrée avec succès !</h2>
+        <h2>Your reservation has been successfully confirmed!</h2>
         <p class="success-message">
-            Merci d'avoir choisi nos services. Vous recevrez un email de confirmation avec les détails de votre réservation.
-            Pour toute question, n'hésitez pas à nous contacter.
+            Thank you for choosing our services. You will receive a confirmation email with the details of your reservation.
+            For any questions, please feel free to contact us.
         </p>
         <a href="home.jsp" class="btn">
-            <i class="fas fa-home"></i> Retour à l'accueil
+            <i class="fas fa-home"></i> Return to Home
         </a>
     </div>
 </body>

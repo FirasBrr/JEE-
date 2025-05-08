@@ -87,7 +87,7 @@
                             <h3><%= car.getCarName() %></h3>
                             <p><%= car.getCarDescription() %></p>
                             <p>Type: <%= car.getCarType() %></p>
-                            <p>Price per day: $<%= car.getPricePerDay() %></p>
+                            <p>Price per day: €<%= car.getPricePerDay() %></p>
                             
                         </div>
                     </div>
