@@ -11,13 +11,10 @@
         return;
     }
 
-    int agentId = user.getId(); // Get the ID of the agent from the session
-
-    // Variables to store the data we will fetch from the database
+    int agentId = user.getId();
     int totalCars = 0;
     double totalRevenue = 0.0;
 
-    // Fetch the number of cars (biens) and total revenue from the database
     Connection connection = DBConnection.getConnection();
     if (connection != null) {
         try {
@@ -30,8 +27,11 @@
                 totalCars = countCarsResult.getInt(1);
             }
 
-            // Query to get the total revenue generated from the agent's cars
-            String totalRevenueQuery = "SELECT SUM(prix_par_jour) FROM biens WHERE agent_id = ?";
+            // NEW: Query to get the total revenue from CONFIRMED reservations
+            String totalRevenueQuery = "SELECT COALESCE(SUM(r.montant_total), 0) " +
+                                     "FROM reservations r " +
+                                     "JOIN biens b ON r.id_bien = b.id " +
+                                     "WHERE b.agent_id = ? AND r.statut = 'confirmée'";
             PreparedStatement totalRevenueStmt = connection.prepareStatement(totalRevenueQuery);
             totalRevenueStmt.setInt(1, agentId);
             ResultSet totalRevenueResult = totalRevenueStmt.executeQuery();
@@ -49,7 +49,6 @@
         }
     }
 %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +72,7 @@
                     <li class="active"><a href="agent.jsp"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                     <li><a href="addCar.jsp"><i class="fas fa-car"></i> Add Car</a></li>
                      <li><a href="listCars.jsp"><i class="fas fa-car"></i> Car Inventory</a></li>       
-                    <li><a href="reservations.jsp"><i class="fas fa-calendar-check"></i> Reservations</a></li>
+                    <li><a href="reservation.jsp"><i class="fas fa-calendar-check"></i> Reservations</a></li>
                     <li><a href="${pageContext.request.contextPath}/login.jsp"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </nav>
@@ -114,51 +113,92 @@
         </div>
     </div>
 <script>
-    // Prepare data from your server (you'll need to pass this from your backend)
-    const totalCars = <%= totalCars %>;  // Replace with your server-side variable for total cars
-    const totalRevenue = <%= totalRevenue %>;  // Replace with your server-side variable for total revenue
+    // Prepare data from your server
+    const totalCars = <%= totalCars %>;
+    const totalRevenue = <%= totalRevenue %>;
 
-    // Chart.js configuration
+    // Create separate y-axes for each dataset
     var ctx = document.getElementById('agentChart').getContext('2d');
     var agentChart = new Chart(ctx, {
-        type: 'bar',  // Bar chart for displaying total cars and total revenue
+        type: 'bar',
         data: {
-            labels: ['Total Cars', 'Total Revenue'],  // Labels for your data
-            datasets: [{
-                label: 'Agent Stats',
-                data: [totalCars, totalRevenue],  // Data points for total cars and revenue
-                backgroundColor: [
-                    '#4e73df', // Color for Total Cars
-                    '#1cc88a'  // Color for Total Revenue
-                ],
-                borderColor: [
-                    '#4e73df',
-                    '#1cc88a'
-                ],
-                borderWidth: 1
-            }]
+            labels: ['Total Cars', 'Total Revenue'],
+            datasets: [
+                {
+                    label: 'Total Cars',
+                    data: [totalCars, null], // Only show in first bar
+                    backgroundColor: '#4e73df',
+                    borderColor: '#4e73df',
+                    borderWidth: 1,
+                    yAxisID: 'y-axis-cars'
+                },
+                {
+                    label: 'Total Revenue (€)',
+                    data: [null, totalRevenue], // Only show in second bar
+                    backgroundColor: '#1cc88a',
+                    borderColor: '#1cc88a',
+                    borderWidth: 1,
+                    yAxisID: 'y-axis-revenue'
+                }
+            ]
         },
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
             responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
+            scales: {
+                x: {
+                    stacked: false
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            // Format the tooltip labels
-                            if (tooltipItem.datasetIndex === 1) {
-                                return `$${tooltipItem.raw.toFixed(2)}`; // Format revenue with dollar sign
-                            }
-                            return tooltipItem.raw;
+                'y-axis-cars': {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Number of Cars'
+                    },
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1 // Ensures whole numbers for car count
+                    }
+                },
+                'y-axis-revenue': {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Revenue (€)'
+                    },
+                    grid: {
+                        drawOnChartArea: false // only show the grid for left axis
+                    },
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value) {
+                            return '€' + value.toLocaleString(); // Format as currency
                         }
                     }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.datasetIndex === 0) {
+                                label += context.raw; // Cars - just show number
+                            } else {
+                                label += '€' + context.raw.toLocaleString(); // Revenue - format as currency
+                            }
+                            return label;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'top',
                 }
             }
         }

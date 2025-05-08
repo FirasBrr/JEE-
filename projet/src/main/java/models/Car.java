@@ -7,7 +7,9 @@ public class Car {
     private double pricePerDay;
     private String carType;
     private String imageUrl;
-
+    private String fuelType;
+    private int seats;
+    private String transmission;
     // Getters and Setters
     public int getId() {
         return id;
@@ -60,5 +62,28 @@ public class Car {
 	public void setAvailability(boolean boolean1) {
 		// TODO Auto-generated method stub
 		
+	}
+	public String getFuelType() {
+	    return fuelType;
+	}
+
+	public void setFuelType(String fuelType) {
+	    this.fuelType = fuelType;
+	}
+
+	public int getSeats() {
+	    return seats;
+	}
+
+	public void setSeats(int seats) {
+	    this.seats = seats;
+	}
+
+	public String getTransmission() {
+	    return transmission;
+	}
+
+	public void setTransmission(String transmission) {
+	    this.transmission = transmission;
 	}
 }

@@ -107,6 +107,66 @@ public class UserDAO {
     public int getVisiteurCount() throws SQLException {
         return getUsersByRole("visiteur");
     }
+ // In your UserDAO class
+
+    public User getUserById(int userId) throws SQLException {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("role")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean updatePassword(int userId, String currentPassword, String newPassword) throws SQLException {
+        // First verify current password
+        String verifySql = "SELECT id FROM users WHERE id = ? AND password = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement verifyStmt = conn.prepareStatement(verifySql)) {
+            verifyStmt.setInt(1, userId);
+            verifyStmt.setString(2, currentPassword);
+            
+            try (ResultSet rs = verifyStmt.executeQuery()) {
+                if (!rs.next()) {
+                    return false; // Current password doesn't match
+                }
+            }
+        }
+        
+        // Update password
+        String updateSql = "UPDATE users SET password = ? WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+            updateStmt.setString(1, newPassword);
+            updateStmt.setInt(2, userId);
+            
+            return updateStmt.executeUpdate() > 0;
+        }
+    }
+
+    public String getCreationDate(int userId) throws SQLException {
+        String sql = "SELECT created_at FROM users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getTimestamp("created_at").toString();
+                }
+            }
+        }
+        return null;
+    }
 }
 
 

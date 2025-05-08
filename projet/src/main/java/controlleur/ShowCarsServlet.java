@@ -46,5 +46,6 @@ public class ShowCarsServlet extends HttpServlet {
         // Forward to the JSP page
         RequestDispatcher dispatcher = request.getRequestDispatcher("/listCars.jsp");
         dispatcher.forward(request, response);
+        
     }
 }

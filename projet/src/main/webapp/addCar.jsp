@@ -34,7 +34,7 @@
                     <li class="active"><a href="addCar.jsp"><i class="fas fa-car"></i> Add Car</a></li>
                     <li><a href="listCars.jsp"><i class="fas fa-car"></i> Car Inventory</a></li>       
                     
-                    <li><a href="reservations.jsp"><i class="fas fa-calendar-check"></i> Reservations</a></li>
+                    <li><a href="reservation.jsp"><i class="fas fa-calendar-check"></i> Reservations</a></li>
                     <li><a href="${pageContext.request.contextPath}/login.jsp"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </nav>

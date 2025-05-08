@@ -7,6 +7,112 @@
     <title>AutoLoc - Location de Voitures</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/global.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>/* Minimal User Dropdown */
+/* User Dropdown - Matches Nav Style */
+.nav-dropdown {
+    position: relative;
+    margin-left: 20px;
+}
+
+.nav-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: var(--dark-color);
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-dropdown-trigger:hover {
+    color: var(--primary-color);
+}
+
+.nav-dropdown-trigger .fa-angle-down {
+    font-size: 0.9em;
+    transition: transform 0.2s;
+}
+
+.nav-dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    width: 200px;
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+    list-style: none;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.nav-dropdown:hover .fa-angle-down {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: var(--dark-color);
+    text-decoration: none;
+    font-size: 0.95em;
+    transition: all 0.2s;
+}
+
+.nav-dropdown-menu li a:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.nav-dropdown-menu li a i {
+    width: 18px;
+    text-align: center;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #eee;
+    margin: 8px 0;
+}
+
+.logout-link {
+    color: var(--danger-color) !important;
+}
+
+.logout-link:hover {
+    color: #c0392b !important;
+}
+
+/* Mobile Adaptation */
+@media (max-width: 768px) {
+    .nav-dropdown {
+        margin-left: 0;
+        margin-top: 15px;
+    }
+    
+    .nav-dropdown-menu {
+        position: static;
+        box-shadow: none;
+        border: 1px solid #eee;
+        margin-top: 10px;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        width: 100%;
+    }
+}</style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -24,8 +130,18 @@
 
 
 
-     <li><span class="btn-user">Bienvenue, <%= username %></span></li>
-<li><a href="${pageContext.request.contextPath}/logout" class="btn-logout">Déconnexion</a></li>
+     <li class="nav-dropdown">
+    <div class="nav-dropdown-trigger">
+        <span class="btn-user">Bienvenue, <%= username %></span>
+        <i class="fas fa-angle-down"></i>
+    </div>
+    <ul class="nav-dropdown-menu">
+        <li><a href="profile.jsp"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="userreservation.jsp"><i class="fas fa-calendar-alt"></i> Reservations</a></li>
+        <li class="dropdown-divider"></li>
+        <li><a href="${pageContext.request.contextPath}/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+</li>
 <%
     } else {
 %>
@@ -86,7 +202,7 @@
                         <span><i class="fas fa-cogs"></i> Manuel</span>
                     </div>
                     <p class="price">À partir de 35€/jour</p>
-    <a href="reserver.jsp?vehicle=economique" class="btn-secondary">Réserver</a>
+    <a href="caruserlist.jsp?vehicle=economique" class="btn-secondary">Réserver</a>
                 </div>
                 
                 <div class="vehicle-card">
@@ -98,7 +214,7 @@
                         <span><i class="fas fa-cogs"></i> Automatique</span>
                     </div>
                     <p class="price">À partir de 65€/jour</p>
-                    <a href="#" class="btn-secondary">Réserver</a>
+                    <a href="reserver.jsp?vehicle=economique" class="btn-secondary">Réserver</a>
                 </div>
                 
                 <div class="vehicle-card">
@@ -185,6 +301,40 @@ document.querySelectorAll('.reserve-btn').forEach(btn => {
                     behavior: 'smooth'
                 });
             });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.querySelector('.nav-dropdown');
+    const trigger = dropdown.querySelector('.nav-dropdown-trigger');
+    
+    // Toggle on click for mobile
+    trigger.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+            const menu = dropdown.querySelector('.nav-dropdown-menu');
+            const isHidden = getComputedStyle(menu).visibility === 'hidden';
+            
+            if (isHidden) {
+                menu.style.opacity = '1';
+                menu.style.visibility = 'visible';
+                menu.style.transform = 'translateY(5px)';
+            } else {
+                menu.style.opacity = '0';
+                menu.style.visibility = 'hidden';
+                menu.style.transform = 'translateY(15px)';
+            }
+        }
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target)) {
+            const menu = dropdown.querySelector('.nav-dropdown-menu');
+            menu.style.opacity = '0';
+            menu.style.visibility = 'hidden';
+            menu.style.transform = 'translateY(15px)';
+        }
     });
 });
 </script>
