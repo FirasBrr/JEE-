@@ -15,11 +15,7 @@
     <input type="text" name="username" placeholder="Username" required />
     <input type="password" name="password" placeholder="Password" required />
     
-    <select name="role" required>
-    <option value="visiteur">Visiteur</option>
-    <option value="agent">Agent</option>
-    <option value="admin">Admin</option>
-	</select>
+    <input type="hidden" name="role" value="visiteur">
     
     <button type="submit">Register</button>
 </form>

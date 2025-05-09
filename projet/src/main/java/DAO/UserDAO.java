@@ -202,11 +202,63 @@
 	
 	    // New method to delete a user
 	    public boolean deleteUser(int userId) throws SQLException {
-	        String sql = "DELETE FROM users WHERE id = ?";
-	        try (Connection conn = DBConnection.getConnection();
-	             PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        Connection conn = null;
+	        PreparedStatement stmt = null;
+
+	        try {
+	            conn = DBConnection.getConnection();
+	            if (conn == null) {
+	                System.out.println("Erreur : Connexion à la base de données échouée.");
+	                return false;
+	            }
+	            conn.setAutoCommit(false); // Start transaction
+
+	            // Step 1: Delete reservations linked to biens managed by the user
+	            String deleteReservationsForBiensSQL = 
+	                "DELETE FROM reservations WHERE id_bien IN (SELECT id FROM biens WHERE agent_id = ?)";
+	            stmt = conn.prepareStatement(deleteReservationsForBiensSQL);
 	            stmt.setInt(1, userId);
-	            return stmt.executeUpdate() > 0;
+	            stmt.executeUpdate();
+	            stmt.close();
+
+	            // Step 2: Delete reservations where the user is id_utilisateur
+	            String deleteUserReservationsSQL = "DELETE FROM reservations WHERE id_utilisateur = ?";
+	            stmt = conn.prepareStatement(deleteUserReservationsSQL);
+	            stmt.setInt(1, userId);
+	            stmt.executeUpdate();
+	            stmt.close();
+
+	            // Step 3: Delete biens managed by the user
+	            String deleteBiensSQL = "DELETE FROM biens WHERE agent_id = ?";
+	            stmt = conn.prepareStatement(deleteBiensSQL);
+	            stmt.setInt(1, userId);
+	            stmt.executeUpdate();
+	            stmt.close();
+
+	            // Step 4: Delete the user
+	            String deleteUserSQL = "DELETE FROM users WHERE id = ?";
+	            stmt = conn.prepareStatement(deleteUserSQL);
+	            stmt.setInt(1, userId);
+	            int rowsAffected = stmt.executeUpdate();
+
+	            conn.commit(); // Commit transaction
+	            return rowsAffected > 0;
+
+	        } catch (SQLException e) {
+	            if (conn != null) {
+	                try {
+	                    conn.rollback(); // Rollback on error
+	                } catch (SQLException rollbackEx) {
+	                    rollbackEx.printStackTrace();
+	                }
+	            }
+	            System.out.println("Erreur lors de la suppression de l'utilisateur.");
+	            e.printStackTrace();
+	            throw e; // Rethrow to handle in servlet
+	        } finally {
+	            if (stmt != null) try { stmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+	            if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
 	        }
+	    
 	    }
 	}

@@ -20,8 +20,27 @@ public class CarDAO {
         }
     }
 
+    // Method to check if a car has reservations
+    public boolean hasReservations(int carId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM reservations WHERE id_bien = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, carId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
     // Method to delete a car
     public boolean deleteCar(int carId) throws SQLException {
+        if (hasReservations(carId)) {
+            throw new SQLException("Cannot delete car: it has active reservations.");
+        }
+
         String sql = "DELETE FROM biens WHERE id = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

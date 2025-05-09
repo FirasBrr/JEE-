@@ -23,7 +23,7 @@
     <% if (request.getAttribute("error") != null) { %>
         <p class="error"><%= request.getAttribute("error") %></p>
     <% } %>
-
+    <a href="register.jsp">Create new account, Register here</a>
    
 </div>
 

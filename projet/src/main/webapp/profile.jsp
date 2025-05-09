@@ -225,12 +225,12 @@
             <a href="#" class="logo">Auto<span>Loc</span></a>
             <ul class="nav-links">
                 <li><a href="home.jsp" >Home</a></li>
-    <li><a href="#vehicles">Our Cars</a></li>
+    <li><a href="caruserlist.jsp">Our Cars</a></li>
                 <% String username = (String) session.getAttribute("username");
                 if (username != null) { %>
                 <li class="nav-dropdown">
                     <div class="nav-dropdown-trigger">
-                        <span class="btn-user">Bienvenue, <%= username %></span>
+                        <span class="btn-user">Welcome, <%= username %></span>
                         <i class="fas fa-angle-down"></i>
                     </div>
                     <ul class="nav-dropdown-menu">
